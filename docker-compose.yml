@@ -67,8 +67,8 @@ services:
   # -----------------------------------------------------------------
   configserver:
     build:
-      context: .
-      dockerfile: backend/configserver/Dockerfile
+      context: backend/configserver
+      dockerfile: Dockerfile
     container_name: ssms-configserver
     restart: always
     ports:
@@ -80,8 +80,8 @@ services:
 
   serviceregistry:
     build:
-      context: .
-      dockerfile: backend/serviceregistry/Dockerfile
+      context: backend/serviceregistry
+      dockerfile: Dockerfile
     container_name: ssms-serviceregistry
     restart: always
     ports:
@@ -95,8 +95,8 @@ services:
 
   apigateway:
     build:
-      context: .
-      dockerfile: backend/apigateway/Dockerfile
+      context: backend/apigateway
+      dockerfile: Dockerfile
     container_name: ssms-apigateway
     restart: always
     ports:
@@ -117,8 +117,8 @@ services:
   # -----------------------------------------------------------------
   userservice:
     build:
-      context: .
-      dockerfile: backend/UserService/ssms/Dockerfile
+      context: backend/UserService/ssms
+      dockerfile: Dockerfile
     container_name: ssms-userservice
     restart: always
     ports:

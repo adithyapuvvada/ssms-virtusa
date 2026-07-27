@@ -27,9 +27,9 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build and Push Docker Image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
-          context: .
+          context: backend/UserService/ssms
           file: backend/UserService/ssms/Dockerfile
           push: true
           tags: |

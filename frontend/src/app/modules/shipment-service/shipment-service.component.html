@@ -1,0 +1,17 @@
+<h2>Welcome to Shipment service</h2>
+
+<div class="shipment-service-container">
+    <ul class="nav-list">
+        <li>
+            <a routerLink="/shipment-service/shipments" class="nav-item">
+                Shipments
+            </a>
+        </li>
+
+        <li *ngIf="!checkAccess(['ROLE_SUPPLIER'])">
+            <a routerLink="/shipment-service/warehouse" class="nav-item">
+                WareHouses
+            </a>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,77 @@
+<h2>Payment Page</h2>
+
+<button class="goBack" (click)="goBack()">go Back</button>
+<h4>What You want to see? 👇</h4>
+<button (click)="view = 'view-payments'">View Payments</button> &nbsp;
+<button (click)="view = 'make-payment'">Make Payment</button>
+
+<div *ngIf="view ==='view-payments'">
+    <div class="view-payments">
+        <h4>Payments List</h4><br/>
+        <div *ngFor="let payment of (paymentList | async)">
+            <div class="thumbnail">
+                <div>PaymentId : {{payment.id}}</div>
+                <div>paymentReference Id : {{payment.paymentReference}}</div>
+                <div>invoiceId : {{payment.invoiceId}}</div>
+                <div>amountPaid : {{payment.amountPaid}}</div>
+                <div>paymentDate : {{payment.paymentDate}}</div>
+                <div>paymentMode : {{payment.paymentMode}}</div>
+             </div>
+        </div>
+        <div *ngIf="!(paymentList | async)">Fetching Payments List...</div>
+    </div>
+</div>
+
+<div *ngIf="view === 'make-payment'">
+    <div class="make-payment">
+        
+        <div *ngIf="paymentStatus === 'SUCCESS'" class="status-box success">
+            <h4>✅ Payment Successful</h4>
+            <p>Reference ID: <strong>{{lastReference}}</strong></p>
+            <p><small>Shipment status will be updated via Kafka soon.</small></p>
+            <button (click)="view = 'view-payments'; paymentStatus = 'IDLE'">OK</button>
+        </div>
+
+        <div *ngIf="paymentStatus === 'ERROR'" class="status-box error">
+            <h4>⚠️ Transaction Failed</h4>
+            <p>{{errorMessage}}</p>
+            <button (click)="paymentStatus = 'IDLE'">Try Again</button>
+        </div>
+
+        <form *ngIf="paymentStatus === 'IDLE' || paymentStatus === 'PROCESSING'" [formGroup]="paymentForm" (ngSubmit)="onPay()">
+            <h4>New Payment</h4>
+            
+            <div>
+                <label>Select Unpaid Invoice:</label>
+                <select formControlName="invoiceId" (change)="onInvoiceSelect($event)" class="form-control">
+                    <option value="" disabled>-- Select Invoice --</option>
+                    <option *ngFor="let inv of unPaidInvoices" [value]="inv.invoiceId">
+                        #{{inv.invoiceNumber}} - ₹{{inv.amount}} ({{inv.customerName}})
+                    </option>
+                </select>
+            </div><br/>
+
+            <div>
+                <label>Amount (Auto-filled):</label>
+                <input type="text" formControlName="amountPaid" class="form-control" readonly>
+            </div><br/>
+
+            <div>
+                <label>Payment Mode:</label>
+                <select formControlName="paymentMode" class="form-control">
+                    <option value="" disabled>-- Select Mode --</option>
+                    <option value="UPI">UPI</option>
+                    <option value="CASH">CASH</option>
+                    <option value="CARD">CARD</option>
+                </select>
+            </div><br/>
+
+            <button type="submit" [disabled]="paymentForm.invalid || paymentStatus === 'PROCESSING'" class="btn-pay">
+                <span *ngIf="paymentStatus === 'PROCESSING'">
+                    <span class="spinner"></span> Processing...
+                </span>
+                <span *ngIf="paymentStatus !== 'PROCESSING'">Pay Now</span>
+            </button>
+        </form>
+    </div>
+</div>

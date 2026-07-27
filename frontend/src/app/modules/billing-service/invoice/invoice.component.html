@@ -1,0 +1,18 @@
+<h2>Invoices Page</h2>
+<button (click)="goBack()">Back to Billing</button> <hr>
+
+<div class="invoice">
+    <div *ngFor="let invoice of (invoices | async)">
+        <div class="thumbnail">
+            <div>invoiceId : {{invoice.invoiceId}}</div>
+            <div>invoiceNumber : {{invoice.invoiceNumber}}</div>
+            <div>shipmentId : {{invoice.shipmentId}}</div>
+            <div>customerName : {{invoice.customerName}}</div>
+            
+            <div>amount : <strong>{{ invoice.amount | currency: invoice.currencyCode }}</strong></div>
+            
+            <div>invoiceDate : {{invoice.invoiceDate}}</div>
+            <div>status : {{invoice.status}}</div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+<div class="login-container">
+    <div class="login-card">
+        <h3>Login</h3>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+
+            <div>
+                <label for="UserName" class="form-label">Username : </label>
+                <input type="text" class="form-control" formControlName="username" placeholder="Enter username"
+                    required>
+                <small *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.invalid">
+                    *username is required
+                </small>
+            </div> <br />
+
+
+            <div>
+                <label for="password" class="form-label">Password : </label>
+                <input type="password" class="form-control" formControlName="password">
+                <small *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
+                    *password is required
+                </small>
+            </div><br />
+
+            <div>
+                <button type="submit" [disabled]="loginForm.invalid || isSubmitting">
+                    <span *ngIf="isSubmitting">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        saving....
+                    </span>
+
+                    <span *ngIf="!isSubmitting">
+                        Login
+                    </span>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>

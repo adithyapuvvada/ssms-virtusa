@@ -1,0 +1,78 @@
+<h2>Shipments</h2>
+<button class="goBack" (click)="goBack()">go Back</button>
+<h4>What You want to see? 👇</h4>
+<button (click)="view = 'view-shipments'">View Shipments</button> &nbsp;
+<button (click)="view = 'add-shipment'">Add Shipment</button>
+
+<div *ngIf="view === 'view-shipments' ">
+    <div class="view-shipments">
+        <h4>Shipments List</h4><br/>
+        <div *ngFor="let shipment of (shipmentList | async)">
+            <div class="thumbnail">
+                <div>ShipmentId : {{shipment.id}}</div>
+                <div>shipmentCode : {{shipment.shipmentCode}}</div>
+                <div>companyId : {{shipment.companyId}}</div>
+                <div>description : {{shipment.description}}</div>
+                <div>volume : {{shipment.volume}}</div>
+                <div>arrivalDate : {{shipment.arrivalDate | date:'medium'}}</div>
+                <div>dispatchDate : {{shipment.dispatchDate | date:'medium'}}</div>
+                <div>status : {{shipment.status}}</div>
+                <h4>Shipment stored warehouse details</h4>
+                <div>Name : {{shipment.warehouse.name}}</div>
+                <div>location : {{shipment.warehouse.location}}</div>
+                <div>totalCapacity : {{shipment.warehouse.totalCapacity}}</div>
+                <div>usedCapacity : {{shipment.warehouse.usedCapacity}}</div>
+                <div>status : {{shipment.warehouse.status}}</div>
+            </div>
+        </div>
+        <div *ngIf="!(shipmentList | async)">Fecthing shipment List....</div>
+    </div>
+</div>
+
+<div *ngIf="view === 'add-shipment'">
+    <div class="add-shipment">
+        <h4>Add New Shipment</h4><br/>
+       
+        <div class="thumbnail">
+           <form [formGroup]="shipmentForm" (ngSubmit)="onAddShipment()">
+                
+                <div class="mb-3">
+                    <label> select company : </label>
+                    <select formControlName="companyId" class="form-control"
+                            [attr.disabled]="currentRole === 'ROLE_SUPPLIER' ? true : null">
+                        <option value="" disabled>--select company--</option>
+                        <option *ngFor="let company of filteredCompanies" [value]="company.id">
+                            {{company.companyName}}
+                        </option>
+                    </select>
+                    <small *ngIf="currentRole === 'ROLE_SUPPLIER'" class="text-muted">
+                    </small>
+                </div><br/>
+
+                <div>
+                    <label>Description : </label>
+                    <input type="text" formControlName="description" placeholder="Shipment details...">
+                    <small *ngIf="shipmentForm.get('description')?.touched && shipmentForm.get('description')?.invalid">
+                        *Description is required
+                    </small>
+                </div> <br/>
+
+                <div>
+                    <label>Volume : </label>
+                    <input type="number" formControlName="volume" placeholder="eg : 5">
+                    <div *ngIf="shipmentForm.get('volume')?.touched && shipmentForm.get('volume')?.invalid">
+                        <small *ngIf="shipmentForm.get('volume')?.errors?.['required']">*Volume is required</small>
+                        <small *ngIf="shipmentForm.get('volume')?.errors?.['min']">*minimum Volume is 1 unit</small>
+                    </div>
+                </div> <br/>
+
+                <button type="submit" [disabled]="shipmentForm.invalid || isSubmitting">
+                    <span *ngIf="isSubmitting">Saving...</span>
+                    <span *ngIf="!isSubmitting">Save Shipment</span>
+                </button> &nbsp;
+
+                <button type="button" (click)="view = 'view-shipments'">Cancel</button>
+           </form>
+        </div>
+    </div>
+</div>

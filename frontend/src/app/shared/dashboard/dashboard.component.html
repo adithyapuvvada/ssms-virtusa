@@ -1,0 +1,40 @@
+<h2>welcome to Dashboard</h2>
+
+<div class="dashboard">
+
+  <a routerLink="/billing" class="card" *ngIf="checkAccess(['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_ACCOUNTANT'])">
+  <p class="title">Total System Revenue</p>
+  <h1>{{ (revenue | async)?.totalRevenue | currency: currentCurrencyCode }}</h1>
+</a>
+
+  <a routerLink="/billing/reports" class="card" *ngIf="checkAccess(['ROLE_ADMIN', 'ROLE_SUPPLIER', 'ROLE_ACCOUNTANT'])">
+    <p class="title">Paid Reports</p>
+    <h1>{{ paidReportCount | async }}</h1>
+  </a>
+
+  <a routerLink="/billing/reports" class="card" *ngIf="checkAccess(['ROLE_ADMIN', 'ROLE_SUPPLIER', 'ROLE_ACCOUNTANT'])">
+    <p class="title">Unpaid Reports</p>
+    <h1>{{ unPaidReportCount | async }}</h1>
+  </a>
+
+  <a routerLink="/shipment-service/shipments" class="card">
+    <p class="title">shipments 📦</p>
+    <h1>{{ shipmentsCount | async }}</h1>
+  </a>
+
+  <a routerLink="/shipment-service/warehouse" class="card" *ngIf="checkAccess(['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_ACCOUNTANT'])">
+    <p class="title">Warehouses</p>
+    <h1>{{ warehouseCount | async }}</h1>
+  </a>
+
+  <a routerLink="/user-service/users" class="card" *ngIf="checkAccess(['ROLE_ADMIN','ROLE_ACCOUNTANT'])">
+    <p class="title">Users</p>
+    <h1>{{ usersCount | async }}</h1>
+  </a>
+
+  <a routerLink="/user-service/shippers" class="card" *ngIf="checkAccess(['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_ACCOUNTANT'])">
+    <p class="title">Companies </p>
+    <h1>{{ shippersCount | async }}</h1>
+  </a>
+
+</div>

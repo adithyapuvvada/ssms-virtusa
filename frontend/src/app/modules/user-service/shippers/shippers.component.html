@@ -1,0 +1,76 @@
+<h2>Shippers Page</h2>
+
+<button class="goBack" (click)="goBack()">go Back</button>
+<h4>What You want to see? 👇</h4>
+<button (click)="view = 'view-shippers'">View Shippers</button> &nbsp;
+<button (click)="view = 'add-shipper'">Add new Shipper</button>
+
+<div *ngIf="view === 'view-shippers' ">
+    <div class="view-shippers">
+        <h4>Shippers List</h4><br/>
+        <div *ngFor="let shipper of (shippersList | async)">
+            <div class="thumbnail">
+                <div>ShipperId : {{shipper.id}}</div>
+                <div>Company Name : {{shipper.companyName}}</div>
+                <div>email : {{shipper.email}}</div>
+                <div>mobile number : {{shipper.phone}}</div>
+            </div>
+        </div>
+        <div *ngIf="!(shippersList | async)">Fecthing Shippers List....</div>
+    </div>
+</div>
+
+
+<div *ngIf="view === 'add-shipper' ">
+    <div class="add-shipper">
+        <h4>Add New Shipper</h4>
+        <form  [formGroup]="shipperForm" (ngSubmit)="onSubmit()">
+            <div class="thumbnail">
+                <div>
+                    <label>Company Name : </label>
+                    <input type="text" formControlName="companyName" class="form-control">
+                    <small *ngIf="shipperForm.get('companyName')?.touched && shipperForm.get('companyName')?.invalid">
+                        *Company Name is required.
+                    </small>
+                </div><br/>
+
+                <div>
+                    <label>Email : </label>
+                    <input type="email" formControlName="email" class="form-control">
+                    <small *ngIf="shipperForm.get('email')?.touched && shipperForm.get('email')?.invalid">
+                        Enter a valid Email
+                    </small>
+                </div><br/>
+
+                <div>
+                    <label>Mobile Number(10 Digits) : </label>
+                    <input type="number" formControlName="phone" class="form-control">
+                    <small *ngIf="shipperForm.get('phone')?.touched && shipperForm.get('phone')?.invalid">
+                        Phone must be exactly 10 digits.
+                    </small>
+                </div> <br/>
+
+                <div class="form-group">
+      <label>Operating Country:</label>
+      <select formControlName="country" class="form-control">
+        <option value="" disabled>-- Select Country --</option>
+        <option value="IN">India (Asia-Pacific)</option>
+      </select>
+    </div><br/>
+
+                <button type="submit" [disabled]="shipperForm.invalid || isSubmitting" class="btn btn-primary">
+    
+                    <span *ngIf="isSubmitting">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Saving...
+                    </span>
+
+                    <span *ngIf="!isSubmitting">Save Shipper</span>
+
+                </button> &nbsp;
+
+                <button type="button" (click)="view = 'view-shippers'">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>

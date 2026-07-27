@@ -1,0 +1,38 @@
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 10px;
+}
+
+/* CARD STYLE */
+.card {
+  display: block;
+  padding: 20px;
+  border-radius: 16px;
+  background: #ffffff;
+  text-decoration: none;
+  color: #333;
+
+  /* Floating effect */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.card .title {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.card h1 {
+  margin: 0;
+  font-size: 28px;
+  color: #111;
+}
+
+.card:hover {
+  transform: translateY(-5px); /* lift up */
+  box-shadow: 0 10px 20px rgba(46, 117, 240, 0.15);
+}

@@ -1,0 +1,22 @@
+<h2>Inventory Management</h2>
+<button (click)="goBack()">Back to Billing</button> <hr>
+
+
+<div>
+    <h3>Inventory List</h3>
+
+    <div class="inventory">
+        <div *ngFor="let inventory of (inventories|async)">
+            <div class="thumbnail">
+                <div> ID : {{inventory.id}}</div>
+                <div>itemName : {{inventory.itemName}}</div>
+                <div>quantity : {{inventory.quantity}}</div>
+                <div>unitPrice : {{inventory.unitPrice}}</div>
+                <div>totalValue : {{inventory.totalValue}}</div>
+                <div>shipmentId : {{inventory.shipmentId}}</div>
+                <div>shipmentCode : {{inventory.shipmentCode}}</div>
+                </div>
+                
+        </div>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+<div class="sidebar-container">
+  <ul class="nav-list">
+    <li>
+      <a routerLink="/dashboard" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+        <span>Dashboard</span>
+      </a>
+    </li>
+    <li *ngIf="checkAccess(['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_SUPPLIER', 'ROLE_INVENTORY_MANAGER'])">
+      <a routerLink="/shipment-service" routerLinkActive="active-link" class="nav-item">
+        <span>Shipments</span>
+      </a>
+    </li>
+    <li *ngIf="checkAccess(['ROLE_ADMIN','ROLE_SUPPLIER', 'ROLE_ACCOUNTANT', 'ROLE_INVENTORY_MANAGER'])">
+      <a routerLink="/billing" routerLinkActive="active-link" class="nav-item">
+        <span>Billing</span>
+      </a>
+    </li>
+    <li *ngIf="checkAccess(['ROLE_ADMIN'])">
+      <a routerLink="/user-service" routerLinkActive="active-link" class="nav-item">
+        <span>User Management</span>
+      </a>
+    </li>
+  </ul>
+</div>

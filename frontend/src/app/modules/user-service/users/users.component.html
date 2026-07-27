@@ -1,0 +1,84 @@
+<h2>Users Page</h2>
+
+<div class="nav-item"><button class="goBack" (click)="goBack()">go Back</button></div>
+<h4>What You want to see? 👇</h4>
+<button (click)="view = 'view-users'">View Users</button> &nbsp;
+<button (click)="view = 'add-user'">Add new User</button>
+
+<div *ngIf="view === 'view-users' ">
+    <div class="view-users">
+        <h4>Users List</h4><br/>
+        <div *ngFor="let user of (userList | async)">
+            <div class="thumbnail">
+                <div>UserId : {{user.id}}</div>
+                <div>userName : {{user.username}}</div>
+                <div>role Name : {{user.role.name}}</div>
+                <div *ngIf="user.companyId">
+                    Linked CompanyId : #{{user.companyId}}
+                </div>
+            </div>
+        </div>
+        <div *ngIf="!(userList | async)">Fecthing Users List....</div>
+    </div>
+</div>
+
+<div *ngIf="view === 'add-user' ">
+    <div class="add-user">
+        <h4>Add New User</h4>
+        <form  [formGroup]="userForm" (ngSubmit)="onSubmit()">
+            <div class="thumbnail">
+                <div>
+                    <label>username : </label>
+                    <input type="text" formControlName="username" class="form-control">
+                    <small *ngIf="userForm.get('username')?.touched && userForm.get('username')?.invalid">
+                        *userName is required.
+                    </small>
+                </div><br/>
+
+                <div>
+                    <label>password : </label>
+                    <input type="password" formControlName="password" class="form-control">
+                    <small *ngIf="userForm.get('password')?.touched && userForm.get('password')?.invalid">
+                        *Enter a password of min 6 characters 
+                    </small>
+                </div><br/>
+
+                <div>
+                    <label>Select Role : </label>
+                    <select formControlName="role", class="form-control">
+                        <option value="" disabled selected>--Choose a Role--</option>
+                        <option *ngFor="let role of availableRoles" [value]="role">
+                            {{role}}
+                        </option>
+                    </select>
+                </div> <br/>
+
+                <div *ngIf="userForm.get('role')?.value === 'SUPPLIER'">
+                    <label>Select Company (Client): </label>
+                    <select formControlName="companyId" class="form-control">
+                        <option value="">-- Select Company --</option>
+                        <option *ngFor="let company of (companiesList | async)" [value]="company.id">
+                            #{{company.id}} - {{company.companyName}}
+                        </option>
+                    </select>
+                    <small *ngIf="userForm.get('companyId')?.touched && userForm.get('companyId')?.invalid" style="color: red;">
+                        *Required for Suppliers
+                    </small>
+                </div> <br *ngIf="userForm.get('role')?.value === 'SUPPLIER'"/>
+
+                <button type="submit" [disabled]="userForm.invalid || isSubmitting" class="btn btn-primary">
+    
+                    <span *ngIf="isSubmitting">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        creating....
+                    </span>
+
+                    <span *ngIf="!isSubmitting">Save User</span>
+
+                </button> &nbsp;
+
+                <button type="button" (click)="view = 'view-users'">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>

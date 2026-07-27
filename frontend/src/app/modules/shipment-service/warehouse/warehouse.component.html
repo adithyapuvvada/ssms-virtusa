@@ -1,0 +1,69 @@
+<h2>WareHouse</h2>
+<button class="goBack" (click)="goBack()">go Back</button>
+<h4>What You want to see? 👇</h4>
+<button (click)="view = 'view-warehouses'; getAllWarehouses()">View WareHouses</button> &nbsp;
+<button (click)="view = 'add-warehouse'; initForm()">Add WareHouse</button>
+
+<div *ngIf="view === 'view-warehouses' ">
+    <div class="view-warehouses">
+        <h4>warehouses List</h4><br/>
+        <div *ngFor="let warehouse of (wareHouseList | async)">
+            <div class="thumbnail">                
+                <div>Name : {{warehouse.name}}</div>
+                <div>location : {{warehouse.location}}</div>
+                <div>totalCapacity : {{warehouse.totalCapacity}}</div>
+                <div>usedCapacity : {{warehouse.usedCapacity}}</div>
+                <div>status : {{warehouse.status}}</div>
+            </div>
+        </div>
+        <div *ngIf="!(wareHouseList | async)">Fecthing warehouse List....</div>
+    </div>
+</div>
+
+<!-- warehouse adding form -->
+<div *ngIf="view === 'add-warehouse' ">
+    <div class="add-warehouse">
+        <h4>Add New WareHouse</h4>
+        <form [formGroup]="warehouseForm" (ngSubmit)="createWarehouse()">
+            <div class="thumbnail">
+                <div>
+                    <label>warehouse name : </label>
+                    <input type="text" formControlName="name">
+                    <small *ngIf="warehouseForm.get('name')?.touched && warehouseForm.get('name')?.invalid">
+                        *warehouse name is invalid
+                    </small>
+                </div><br/>
+
+                <div>
+                    <label>Location : </label>
+                    <input type="text" formControlName="location">
+                    <small *ngIf="warehouseForm.get('location')?.touched && warehouseForm.get('location')?.invalid">
+                        *location is required
+                    </small>
+                </div> <br/>
+
+                <div>
+                    <label>Total Capacity : </label>
+                    <input type="text" formControlName="totalCapacity" placeholder="Min 1000">
+                    <div *ngIf="warehouseForm.get('totalCapacity')?.touched && warehouseForm.get('totalCapacity')?.invalid">
+                        <small *ngIf="warehouseForm.get('totalCapacity')?.errors?.['required']">Capacity is required</small>
+                        <small *ngIf="warehouseForm.get('totalCapacity')?.errors?.['min']">Minimum capacity must be 1000</small><br/>
+                        <small *ngIf="warehouseForm.get('totalCapacity')?.errors?.['pattern']">Decimals are not allowed</small>
+                    </div>
+                </div><br/>
+
+                <button type="submit" [disabled]="warehouseForm.invalid || isSubmitting">
+                     <span *ngIf="isSubmitting">
+                        <span role="status" aria-hidden="true"></span>
+                        creating....
+                    </span>
+
+                    <span *ngIf="!isSubmitting">Add new WareHouse</span>
+                </button> &nbsp;
+
+                <button type="button" (click)="view = 'view-warehouses'">Cancel</button>
+
+            </div>
+        </form>
+    </div>
+</div>

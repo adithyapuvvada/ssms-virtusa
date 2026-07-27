@@ -1,0 +1,51 @@
+<h2>SSMS Reports</h2>
+<button (click)="goBack()">go Back</button> <br/>
+<h4>What You want to see? 👇</h4>
+<button (click)="view = 'paid'">Paid-Reports</button> &nbsp;
+<button (click)="view = 'unpaid'">Un-Paid-Reports</button> &nbsp;
+
+<button *ngIf="view === 'paid' || view === 'unpaid' " (click)="view = 'Clear'">Clear View </button> <hr>
+
+<div *ngIf="view === 'paid'">
+<div class="paid-reports">
+    <h2> Paid Reports </h2><br/>
+    <div *ngFor="let report of (paidReports | async)">
+        <div class="thumbnail">
+            <div>invoiceId : {{report.invoiceId}}</div>
+            <div>invoiceNumber : {{report.invoiceNumber}}</div>
+            <div>shipmentId : {{report.shipmentId}}</div>
+            <div>customerName : {{report.customerName}}</div>
+            
+            <div>amount : <strong>{{ report.amount | currency: report.currencyCode }}</strong></div>
+            
+            <div>invoiceDate : {{report.invoiceDate}}</div>
+            <div>status : {{report.status}}</div>
+        </div>
+    </div>
+    <div *ngIf="!(paidReports | async)">Fecthing Paid Reports....</div>
+</div>
+</div>
+
+<div *ngIf="view === 'unpaid'">
+<div class="un-paid-reports">
+    <h2>UnPaid Reports</h2><br/>
+    <div *ngFor="let report of (unPaidReports | async)">
+        <div class="thumbnail">
+            <div>invoiceId : {{report.invoiceId}}</div>
+            <div>invoiceNumber : {{report.invoiceNumber}}</div>
+            <div>shipmentId : {{report.shipmentId}}</div>
+            <div>customerName : {{report.customerName}}</div>
+            
+            <div>amount : <strong>{{ report.amount | currency: report.currencyCode }}</strong></div>
+            
+            <div>invoiceDate : {{report.invoiceDate}}</div>
+            <div>status : {{report.status}}</div>
+        </div>
+    </div>
+    <div *ngIf="!(unPaidReports | async)">Fecthing Un-Paid Reports....</div>
+</div>
+</div>
+
+<div *ngIf="view === 'Clear'">
+    <p>your view cleared successfully!....</p>
+</div>

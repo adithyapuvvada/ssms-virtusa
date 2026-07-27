@@ -52,9 +52,13 @@ jobs:
             else
               git pull origin main || git pull origin master
             fi
-            if command -v docker &> /dev/null; then
-              docker compose pull billingservice || docker-compose pull billingservice
-              docker compose up -d --no-deps billingservice || docker-compose up -d --no-deps billingservice
+            
+            if command -v docker &> /dev/null && docker compose version &> /dev/null; then
+              docker compose pull billingservice
+              docker compose up -d --no-deps billingservice
+            elif command -v docker-compose &> /dev/null; then
+              docker-compose pull billingservice
+              docker-compose up -d --no-deps billingservice
             else
               sudo docker compose pull billingservice || sudo docker-compose pull billingservice
               sudo docker compose up -d --no-deps billingservice || sudo docker-compose up -d --no-deps billingservice

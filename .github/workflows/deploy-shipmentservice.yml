@@ -52,9 +52,13 @@ jobs:
             else
               git pull origin main || git pull origin master
             fi
-            if command -v docker &> /dev/null; then
-              docker compose pull shipmentservice || docker-compose pull shipmentservice
-              docker compose up -d --no-deps shipmentservice || docker-compose up -d --no-deps shipmentservice
+            
+            if command -v docker &> /dev/null && docker compose version &> /dev/null; then
+              docker compose pull shipmentservice
+              docker compose up -d --no-deps shipmentservice
+            elif command -v docker-compose &> /dev/null; then
+              docker-compose pull shipmentservice
+              docker-compose up -d --no-deps shipmentservice
             else
               sudo docker compose pull shipmentservice || sudo docker-compose pull shipmentservice
               sudo docker compose up -d --no-deps shipmentservice || sudo docker-compose up -d --no-deps shipmentservice

@@ -106,7 +106,6 @@ class ShipmentControllerTest {
     void shouldAddShipmentSuccessfully() throws Exception {
         ShipmentRequestDTO requestDTO = new ShipmentRequestDTO();
         requestDTO.setCompanyId(10L);
-        requestDTO.setShipmentCode("SHIP-001");
         requestDTO.setDescription("Sample shipment");
         requestDTO.setVolume(50);
 

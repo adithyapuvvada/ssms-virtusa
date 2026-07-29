@@ -5,7 +5,9 @@ import com.ssms.billing.entity.Invoice;
 import com.ssms.billing.entity.Payment;
 import com.ssms.billing.exceptions.InvalidOperationException;
 import com.ssms.billing.exceptions.ResourceNotFoundException;
-import com.ssms.billing.openfeign.ShipmentClient;
+import com.ssms.billing.enums.PaymentMode;
+import com.ssms.billing.kafka.producer.PaymentEventProducer;
+import com.ssms.common.event.PaymentCompletedEvent;
 import com.ssms.billing.repository.PaymentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +29,7 @@ class PaymentServiceTest {
     private InvoiceService invoiceService;
 
     @Mock
-    private ShipmentClient shipmentService;
+    private PaymentEventProducer paymentEventProducer;
 
     @InjectMocks
     private PaymentService paymentService;
@@ -38,11 +40,13 @@ class PaymentServiceTest {
         PaymentDTO paymentDTO = new PaymentDTO();
         paymentDTO.setInvoiceId(1);
         paymentDTO.setAmountPaid(1000.0);
+        paymentDTO.setPaymentMode(PaymentMode.UPI);
 
         Invoice invoice = new Invoice();
         invoice.setInvoiceId(1);
         invoice.setAmount(1000.0);
         invoice.setShipmentId(10L);
+        invoice.setStatus("UNPAID");
 
         when(invoiceService.getInvoiceById(1)).thenReturn(invoice);
         when(paymentRepository.save(any(Payment.class)))
@@ -53,7 +57,7 @@ class PaymentServiceTest {
         assertNotNull(result.getPaymentReference());
         assertEquals(LocalDate.now(), result.getPaymentDate());
 
-        verify(shipmentService).dispatchShipment(10L);
+        verify(paymentEventProducer).sendInvoiceCreatedEvent(any(PaymentCompletedEvent.class));
         verify(invoiceService).markAsPaid(1);
         verify(paymentRepository).save(any(Payment.class));
     }
@@ -63,9 +67,10 @@ class PaymentServiceTest {
 
         PaymentDTO payment = new PaymentDTO();
         payment.setAmountPaid(0);
+        payment.setPaymentMode(PaymentMode.UPI);
 
         assertThrows(InvalidOperationException.class,
-                () -> paymentService.makePayment(payment));
+                 () -> paymentService.makePayment(payment));
     }
 
     @Test
@@ -74,6 +79,7 @@ class PaymentServiceTest {
         PaymentDTO payment = new PaymentDTO();
         payment.setInvoiceId(1);
         payment.setAmountPaid(500.0);
+        payment.setPaymentMode(PaymentMode.UPI);
 
         Invoice invoice = new Invoice();
         invoice.setAmount(1000.0);

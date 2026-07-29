@@ -44,6 +44,7 @@ public class WarehouseController {
 
     // Simple helper method to keep the code clean
     private boolean isAuthorized(String userRole, String... allowedRoles) {
+        if (userRole == null) return false;
         for (String allowed : allowedRoles) {
             if (allowed.contains(userRole)) return true;
         }

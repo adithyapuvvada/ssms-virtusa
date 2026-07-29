@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -64,16 +65,17 @@ class ShipmentControllerTest {
                 .build();
 
         // Mock the service call if needed
-        when(shipmentService.addIncomingShipment(any(Shipment.class),"ROLE_ADMIN"))
+        when(shipmentService.addIncomingShipment(any(Shipment.class), anyString()))
                 .thenReturn(shipment);
     }
 
     @Test
     @WithMockUser(username = "supplierUser", roles = {"SUPPLIER"})
     void shouldReturnAllShipments() throws Exception {
-        when(shipmentService.getAllShipments("ROLE_ADMIN",1L)).thenReturn(List.of(shipment));
+        when(shipmentService.getAllShipments(anyString(), any())).thenReturn(List.of(shipment));
 
-        mockMvc.perform(get("/ssms/shipment/shipments"))
+        mockMvc.perform(get("/ssms/shipment/shipments")
+                        .header("X-User-Role", "ROLE_MANAGER"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(shipment.getId()))
                 .andExpect(jsonPath("$[0].shipmentCode").value(shipment.getShipmentCode()));
@@ -84,7 +86,8 @@ class ShipmentControllerTest {
     void shouldReturnShipmentById() throws Exception {
         when(shipmentService.findById(1L)).thenReturn(shipment);
 
-        mockMvc.perform(get("/ssms/shipment/shipments/1"))
+        mockMvc.perform(get("/ssms/shipment/shipments/1")
+                        .header("X-User-Role", "ROLE_MANAGER"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(shipment.getId()))
                 .andExpect(jsonPath("$.shipmentCode").value(shipment.getShipmentCode()));
@@ -96,7 +99,8 @@ class ShipmentControllerTest {
         when(shipmentService.findById(1L))
                 .thenThrow(new ResourceNotFoundException("Shipment not found"));
 
-        mockMvc.perform(get("/ssms/shipment/shipments/1"))
+        mockMvc.perform(get("/ssms/shipment/shipments/1")
+                        .header("X-User-Role", "ROLE_MANAGER"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Shipment not found"));
     }
@@ -109,10 +113,11 @@ class ShipmentControllerTest {
         requestDTO.setDescription("Sample shipment");
         requestDTO.setVolume(50);
 
-        when(shipmentService.addIncomingShipment(any(Shipment.class),"ROLE_ADMIN")).thenReturn(shipment);
+        when(shipmentService.addIncomingShipment(any(Shipment.class), anyString())).thenReturn(shipment);
         Mockito.doNothing().when(shipmentService).addInventory(any(Shipment.class));
 
         mockMvc.perform(post("/ssms/shipment/shipments")
+                        .header("X-User-Role", "ROLE_MANAGER")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
@@ -127,6 +132,7 @@ class ShipmentControllerTest {
         ShipmentRequestDTO requestDTO = new ShipmentRequestDTO(); // all fields null/invalid
 
         mockMvc.perform(post("/ssms/shipment/shipments")
+                        .header("X-User-Role", "ROLE_MANAGER")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))

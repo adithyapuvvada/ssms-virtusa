@@ -33,7 +33,9 @@ class InventoryControllerTest {
         when(inventoryService.getAllInventory("ROLE_ADMIN",1l))
                 .thenReturn(List.of(new Inventory(),new Inventory()));
 
-        mockMvc.perform(get("/ssms/billing/inventory/all"))
+        mockMvc.perform(get("/ssms/billing/inventory/all")
+                        .header("X-User-Role", "ROLE_ADMIN")
+                        .param("companyId", "1"))
                 .andExpect(status().isOk());
     }
 }

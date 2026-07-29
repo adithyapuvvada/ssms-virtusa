@@ -51,6 +51,7 @@ class WareHouseControllerTest {
         Mockito.when(warehouseService.createWarehouse(any(Warehouse.class))).thenReturn(warehouse);
 
         mockMvc.perform(post("/ssms/shipment/warehouses")
+                        .header("X-User-Role", "ROLE_MANAGER")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(warehouse)))
@@ -86,7 +87,8 @@ class WareHouseControllerTest {
         List<Warehouse> warehouses = Arrays.asList(w1, w2);
         Mockito.when(warehouseService.getAllWarehouses()).thenReturn(warehouses);
 
-        mockMvc.perform(get("/ssms/shipment/warehouses"))
+        mockMvc.perform(get("/ssms/shipment/warehouses")
+                        .header("X-User-Role", "ROLE_MANAGER"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].name", is("Warehouse 1")))
@@ -100,7 +102,8 @@ class WareHouseControllerTest {
     void testGetAllWarehousesEmpty() throws Exception {
         Mockito.when(warehouseService.getAllWarehouses()).thenReturn(List.of());
 
-        mockMvc.perform(get("/ssms/shipment/warehouses"))
+        mockMvc.perform(get("/ssms/shipment/warehouses")
+                        .header("X-User-Role", "ROLE_MANAGER"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
     }
@@ -114,6 +117,7 @@ class WareHouseControllerTest {
                 .build(); // Missing required 'name' and 'location'
 
         mockMvc.perform(post("/ssms/shipment/warehouses")
+                        .header("X-User-Role", "ROLE_MANAGER")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidWarehouse)))
@@ -134,6 +138,7 @@ class WareHouseControllerTest {
                 .thenThrow(new RuntimeException("Database error"));
 
         mockMvc.perform(post("/ssms/shipment/warehouses")
+                        .header("X-User-Role", "ROLE_MANAGER")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(warehouse)))

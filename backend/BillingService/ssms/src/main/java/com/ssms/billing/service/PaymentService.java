@@ -30,7 +30,7 @@ public class PaymentService {
         payment.setAmountPaid(paymentDTO.getAmountPaid());
         payment.setPaymentMode(paymentDTO.getPaymentMode().name());
 
-        if(payment.getAmountPaid() < 0){
+        if(payment.getAmountPaid() <= 0){
             throw new InvalidOperationException("Payment must be greater than 0");
         }
         Invoice invoice = invoiceService.getInvoiceById(payment.getInvoiceId());

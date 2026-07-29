@@ -41,6 +41,7 @@ class PaymentControllerTest {
                 .thenReturn(payment);
 
         mockMvc.perform(post("/ssms/billing/payment/pay")
+                        .header("X-User-Role", "ROLE_ADMIN")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(payment)))
@@ -57,7 +58,8 @@ class PaymentControllerTest {
         when(paymentService.getPaymentsByInvoice(1))
                 .thenReturn(payment);
 
-        mockMvc.perform(get("/ssms/billing/payment/invoice/1"))
+        mockMvc.perform(get("/ssms/billing/payment/invoice/1")
+                        .header("X-User-Role", "ROLE_ADMIN"))
                 .andExpect(status().isOk());
     }
 }

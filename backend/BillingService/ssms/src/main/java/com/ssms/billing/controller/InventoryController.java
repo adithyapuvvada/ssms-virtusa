@@ -33,6 +33,7 @@ public class InventoryController {
     }
 
     private boolean isAuthorized(String userRole, String... allowedRoles) {
+        if (userRole == null) return false;
         for (String allowed : allowedRoles) {
             if (allowed.contains(userRole)) return true;
         }

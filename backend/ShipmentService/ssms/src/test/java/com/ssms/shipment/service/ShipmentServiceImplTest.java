@@ -6,7 +6,8 @@ import com.ssms.shipment.entity.ShipmentStatus;
 import com.ssms.shipment.entity.Warehouse;
 import com.ssms.shipment.entity.WarehouseStatus;
 import com.ssms.shipment.exception.ResourceNotFoundException;
-import com.ssms.shipment.openfeign.BillingClient;
+import com.ssms.shipment.kafka.producer.ShipmentEventProducer;
+import com.ssms.common.event.ShipmentCompletedEvent;
 import com.ssms.shipment.openfeign.UserClient;
 import com.ssms.shipment.repository.ShipmentRepository;
 import com.ssms.shipment.repository.WarehouseRepository;
@@ -39,7 +40,7 @@ class ShipmentServiceImplTest {
     private UserClient shipperController;
 
     @Mock
-    private BillingClient inventoryService;
+    private ShipmentEventProducer shipmentEventProducer;
 
     @InjectMocks
     private ShipmentServiceImpl shipmentService;
@@ -54,6 +55,7 @@ class ShipmentServiceImplTest {
         shipment.setCompanyId(10L);
         shipment.setVolume(50);
         shipment.setShipmentCode("SHIP-001");
+        shipment.setDescription("Sample shipment");
 
         warehouse = new Warehouse();
         warehouse.setId(100L);
@@ -102,7 +104,7 @@ class ShipmentServiceImplTest {
         assertNotNull(result.getArrivalDate());
 
         verify(warehouseRepository, times(1)).save(warehouse);
-        verify(shipmentRepository, times(1)).save(shipment);
+        verify(shipmentRepository, times(2)).save(shipment);
     }
 
     @Test
@@ -129,16 +131,18 @@ class ShipmentServiceImplTest {
     void shouldCallInventoryControllerWithCorrectData() {
         shipmentService.addInventory(shipment);
 
-        ArgumentCaptor<InventoryDTO> captor =
-                ArgumentCaptor.forClass(InventoryDTO.class);
+        ArgumentCaptor<ShipmentCompletedEvent> captor =
+                ArgumentCaptor.forClass(ShipmentCompletedEvent.class);
 
-        verify(inventoryService).addInventory(captor.capture());
+        verify(shipmentEventProducer).sendShipmentCreatedEvent(captor.capture());
 
-        InventoryDTO captured = captor.getValue();
+        ShipmentCompletedEvent captured = captor.getValue();
 
-        assertEquals("SHIP-001", captured.getItemName());
+        assertEquals("Sample shipment", captured.getItemName());
+        assertEquals("SHIP-001", captured.getShipmentCode());
+        assertEquals(10L, captured.getCompanyId());
         assertEquals(50, captured.getQuantity());
-        assertEquals(5, captured.getUnitPrice());
+        assertEquals(5.0, captured.getUnitPrice());
         assertEquals(1L, captured.getShipmentId());
     }
 

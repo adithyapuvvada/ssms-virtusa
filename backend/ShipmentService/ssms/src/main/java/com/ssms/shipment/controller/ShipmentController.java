@@ -30,6 +30,16 @@ public class ShipmentController {
     }
 
 
+    @GetMapping("/{id}")
+    public ShipmentResponseDTO getShipmentById(@RequestHeader(value="X-User-Role", required=false) String role,
+                                               @PathVariable Long id) {
+        if(!isAuthorized(role, "ROLE_MANAGER", "ROLE_SUPPLIER", "ROLE_INVENTORY_MANAGER", "ROLE_ADMIN")){
+            throw new ResourceNotFoundException("Access Denied");
+        }
+        return ShipmentMapper.toDTO(shipmentService.findById(id));
+    }
+
+
     @PostMapping
     public ShipmentResponseDTO addShipment(@RequestHeader(value="X-User-Role", required=false) String role,
                                            @Valid @RequestBody ShipmentRequestDTO requestDTO){
@@ -45,6 +55,7 @@ public class ShipmentController {
     }
 
     private boolean isAuthorized(String userRole, String... allowedRoles) {
+        if (userRole == null) return false;
         for (String allowed : allowedRoles) {
             if (allowed.contains(userRole)) return true;
         }

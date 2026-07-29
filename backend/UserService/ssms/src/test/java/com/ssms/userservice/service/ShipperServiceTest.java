@@ -27,7 +27,7 @@ class ShipperServiceTest {
     @Test
     void testGetById_Success() {
 
-        Shipper shipper = new Shipper(1L, "Tata", "tata@gmail.com", 1234567890L);
+        Shipper shipper = new Shipper(1L, "Tata", "tata@gmail.com", 1234567890L, "India", "INR");
 
         when(shipperRepository.findById(1L))
                 .thenReturn(Optional.of(shipper));
@@ -59,11 +59,15 @@ class ShipperServiceTest {
         shipperDTO.setCompanyName("TCS");
         shipperDTO.setEmail("tcs@gmail.com");
         shipperDTO.setPhone(1234567890L);
+        shipperDTO.setCountry("India");
+        shipperDTO.setCurrencyCode("INR");
 
         Shipper shipper = new Shipper();
         shipper.setCompanyName("TCS");
         shipper.setEmail("tcs@gmail.com");
         shipper.setPhone(1234567890L);
+        shipper.setCountry("India");
+        shipper.setCurrencyCode("INR");
 
         when(shipperRepository.findByEmail("tcs@gmail.com"))
                 .thenReturn(Optional.empty());

@@ -36,7 +36,7 @@ class ShipperControllerTest {
     @WithMockUser(roles = "ADMIN")
     void testGetAllShippers() throws Exception {
 
-        Shipper shipper = new Shipper(1L, "Tata", "tata@gmail.com", 1234567890L);
+        Shipper shipper = new Shipper(1L, "Tata", "tata@gmail.com", 1234567890L, "India", "INR");
 
         when(shipperService.getAllShippers())
                 .thenReturn(List.of(shipper));
@@ -50,7 +50,7 @@ class ShipperControllerTest {
     @WithMockUser(roles = "ADMIN")
     void testAddShipper() throws Exception {
 
-        Shipper shipper = new Shipper(1L, "TCS", "tcs@gmail.com", 1234567890L);
+        Shipper shipper = new Shipper(1L, "TCS", "tcs@gmail.com", 1234567890L, "India", "INR");
 
         when(shipperService.addShipper(any(ShipperDTO.class)))
                 .thenReturn(shipper);

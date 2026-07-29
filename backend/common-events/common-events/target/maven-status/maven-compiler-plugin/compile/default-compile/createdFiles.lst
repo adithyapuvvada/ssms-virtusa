@@ -1,0 +1,3 @@
+com\ssms\common\event\ShipmentCompletedEvent.class
+com\ssms\common\event\PaymentCompletedEvent.class
+com\ssms\App.class

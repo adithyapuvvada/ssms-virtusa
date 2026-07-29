@@ -9,9 +9,8 @@ RUN cd /app/common-events && mvn clean install -DskipTests
 # Step 2: Build BillingService
 WORKDIR /app/billingservice
 COPY backend/BillingService/ssms/pom.xml .
-RUN mvn dependency:go-offline -B
 COPY backend/BillingService/ssms/src ./src
-RUN mvn package -DskipTests
+RUN mvn clean package -DskipTests
 
 # Stage 2: Runtime environment
 FROM eclipse-temurin:17-jre-alpine

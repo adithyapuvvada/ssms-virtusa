@@ -86,8 +86,7 @@ services:
     restart: always
     ports:
       - "8761:8761"
-    environment:
-      SPRING_CONFIG_IMPORT: configserver:http://configserver:9999
+    # No external config server imports needed for Eureka registry itself
     depends_on:
       - configserver
     networks:
@@ -102,7 +101,7 @@ services:
     ports:
       - "8089:8089"
     environment:
-      SPRING_CONFIG_IMPORT: configserver:http://configserver:9999
+      CONFIG_SERVER_URL: http://configserver:9999
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://serviceregistry:8761/eureka
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     depends_on:
@@ -124,7 +123,7 @@ services:
     ports:
       - "8071:8071"
     environment:
-      SPRING_CONFIG_IMPORT: configserver:http://configserver:9999
+      CONFIG_SERVER_URL: http://configserver:9999
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ssms_user_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD:-Adithya@#1}
@@ -149,7 +148,7 @@ services:
     ports:
       - "8072:8072"
     environment:
-      SPRING_CONFIG_IMPORT: configserver:http://configserver:9999
+      CONFIG_SERVER_URL: http://configserver:9999
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ssms_shipment_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD:-Adithya@#1}
@@ -177,7 +176,7 @@ services:
     ports:
       - "8073:8073"
     environment:
-      SPRING_CONFIG_IMPORT: configserver:http://configserver:9999
+      CONFIG_SERVER_URL: http://configserver:9999
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ssms_billing_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD:-Adithya@#1}

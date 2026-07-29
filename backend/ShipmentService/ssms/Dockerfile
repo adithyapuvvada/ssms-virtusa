@@ -9,9 +9,8 @@ RUN cd /app/common-events && mvn clean install -DskipTests
 # Step 2: Build ShipmentService
 WORKDIR /app/shipmentservice
 COPY backend/ShipmentService/ssms/pom.xml .
-RUN mvn dependency:go-offline -B
 COPY backend/ShipmentService/ssms/src ./src
-RUN mvn package -DskipTests
+RUN mvn clean package -DskipTests
 
 # Stage 2: Runtime environment
 FROM eclipse-temurin:17-jre-alpine

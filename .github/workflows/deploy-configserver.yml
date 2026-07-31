@@ -44,20 +44,27 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             export PATH=$PATH:/usr/local/bin:/usr/bin:/bin
+
             mkdir -p ~/app
             cd ~/app
+
             if [ ! -d ".git" ]; then
               git clone https://github.com/${{ github.repository }}.git .
             else
               git pull origin main || git pull origin master
             fi
-            
+
+            # Create Docker Compose environment file
+            echo "DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}" > .env
+
             if command -v docker &> /dev/null && docker compose version &> /dev/null; then
               docker compose pull configserver
               docker compose up -d --no-deps configserver
+
             elif command -v docker-compose &> /dev/null; then
               docker-compose pull configserver
               docker-compose up -d --no-deps configserver
+
             else
               sudo docker compose pull configserver || sudo docker-compose pull configserver
               sudo docker compose up -d --no-deps configserver || sudo docker-compose up -d --no-deps configserver

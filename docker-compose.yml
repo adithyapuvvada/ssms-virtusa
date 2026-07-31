@@ -66,7 +66,7 @@ services:
   # Core Spring Cloud Infra Services
   # -----------------------------------------------------------------
   configserver:
-    image: ${secrets.DOCKERHUB_USERNAME}/ssms-configserver:latest
+    image: ${{ secrets.DOCKERHUB_USERNAME }}/ssms-configserver:latest
     build:
       context: backend/configserver
       dockerfile: Dockerfile
@@ -80,7 +80,7 @@ services:
       - ssms-network
 
   serviceregistry:
-    image: ${secrets.DOCKERHUB_USERNAME}/ssms-serviceregistry:latest
+    image: ${{ secrets.DOCKERHUB_USERNAME }}/ssms-serviceregistry:latest
     build:
       context: backend/serviceregistry
       dockerfile: Dockerfile
@@ -95,7 +95,7 @@ services:
       - ssms-network
 
   apigateway:
-    image: ${secrets.DOCKERHUB_USERNAME}/ssms-apigateway:latest
+    image: ${{ secrets.DOCKERHUB_USERNAME }}/ssms-apigateway:latest
     build:
       context: backend/apigateway
       dockerfile: Dockerfile
@@ -118,7 +118,7 @@ services:
   # Business Microservices
   # -----------------------------------------------------------------
   userservice:
-    image: ${secrets.DOCKERHUB_USERNAME}/ssms-userservice:latest
+    image: ${{ secrets.DOCKERHUB_USERNAME }}/ssms-userservice:latest
     build:
       context: backend/UserService/ssms
       dockerfile: Dockerfile
@@ -144,7 +144,7 @@ services:
       - ssms-network
 
   shipmentservice:
-    image: ${secrets.DOCKERHUB_USERNAME}/ssms-shipmentservice:latest
+    image: ${{ secrets.DOCKERHUB_USERNAME }}/ssms-shipmentservice:latest
     build:
       context: .
       dockerfile: backend/ShipmentService/ssms/Dockerfile
@@ -173,7 +173,7 @@ services:
       - ssms-network
 
   billingservice:
-    image: ${secrets.DOCKERHUB_USERNAME}/ssms-billingservice:latest
+    image: ${{ secrets.DOCKERHUB_USERNAME }}/ssms-billingservice:latest
     build:
       context: .
       dockerfile: backend/BillingService/ssms/Dockerfile
@@ -205,7 +205,7 @@ services:
   # Frontend Service
   # -----------------------------------------------------------------
   frontend:
-    image: ${secrets.DOCKERHUB_USERNAME}/ssms-frontend:latest
+    image: ${{ secrets.DOCKERHUB_USERNAME }}/ssms-frontend:latest
     build:
       context: frontend
       dockerfile: Dockerfile
